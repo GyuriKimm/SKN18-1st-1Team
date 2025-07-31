@@ -1,0 +1,10 @@
+{
+    "database": {
+        "host": "localhost",
+        "port": 3306,
+        "user": "gyuri",
+        "password": "1221",
+        "db": "test_db",
+        "table": "companyFAQ"
+    }
+}

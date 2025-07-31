@@ -49,7 +49,7 @@ class Database:
     def read_data(self):
         """연결된 데이터베이스에 데이터 읽기"""
         cur = self.connection.cursor()
-        query = f"SELECT * FROM {self.table}"
+        query = f"SELECT question, answer, category, company FROM {self.table}"
         try:
             cur.execute(query)
         except Exception as e:
