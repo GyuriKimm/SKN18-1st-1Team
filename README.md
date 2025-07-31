@@ -5,7 +5,7 @@
 ## Team INFO
 | Name | Role | Github |
 | --- | --- |  ---|
-| 황민우 | `팀장` | 
+| 황민우 | `팀장` | @minwooHwang
 | 김규리 | `팀원` | @GyuriKimm
 | 김창현 | `팀원` |
 | 이수진 | `팀원` |
