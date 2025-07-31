@@ -1,11 +1,17 @@
 import json
+import sys
+import os
 
+# 현재 파일 기준 상위 디렉토리 (sources/)를 import 경로에 추가
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from database import Database
 from infiniti_FAQ import InfinitiFAQCrawler
 from genesis_FAQ import GenesisFAQCrawler
-from database import Database
+
 
 def get_config():
-    with open("./config.json", encoding="UTF-8") as f:
+    with open("../config.json", encoding="UTF-8") as f:
         config = json.load(f)
     return config
 
