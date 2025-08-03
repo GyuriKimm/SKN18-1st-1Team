@@ -6,7 +6,6 @@ import json
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
 import streamlit as st
-import pymysql
 import pandas as pd
 
 from database import Database
@@ -28,10 +27,7 @@ def fetch_faq_data():
 
 def show_banner(faq_brand):
     # 브랜드별 배너 이미지 매핑
-    banner_map = {
-        "INFINITI FAQ": "./image/infiniti.png",
-        "GENESIS FAQ": "./image/genesis.png"
-    }
+    banner_map = get_config().get("banner")
     # 배너 이미지 출력
     st.image(banner_map.get(faq_brand, "./image/infiniti.png"))
 
@@ -64,9 +60,10 @@ if __name__=="__main__":
     # Streamlit 설정
     st.set_page_config(layout="wide", page_title="FAQ")
     st.sidebar.title("❓ FAQ")
+    brands = get_config().get("banner").keys()
 
     # 브랜드 선택
-    faq_brand = st.sidebar.selectbox("브랜드를 선택하세요", ["INFINITI FAQ", "GENESIS FAQ"])
+    faq_brand = st.sidebar.selectbox("브랜드를 선택하세요", brands)
     show_banner(faq_brand)
 
     # 전체 FAQ 데이터 가져오기
