@@ -1,11 +1,11 @@
 {
     "database": {
-        "host": "",
+        "host": "localhost",
         "port": 3306,
-        "user": "",
-        "password": "",
-        "db": "",
-        "table": ""
+        "user": "urstory",
+        "password": "1234",
+        "db": "examplesdb",
+        "table": "companyFAQ"
     },
     "banner": {
         "INFINITI FAQ": "./image/infiniti.png",

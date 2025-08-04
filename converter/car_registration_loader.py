@@ -3,11 +3,11 @@ import pymysql
 
 # 공통 DB 설정
 DB_CONFIG = {
-    "host": "",
+    "host": "localhost",
     "port": 3306,
-    "user": "",
-    "password": "",
-    "database": "",
+    "user": "urstory",
+    "password": "1234",
+    "database": "examplesdb",
     "charset": "utf8"
 }
 

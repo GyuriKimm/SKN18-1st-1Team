@@ -18,7 +18,7 @@
   <tr>
     <td><img src="https://img.shields.io/badge/python-3776AB?style=flat&logo=python&logoColor=white"/></td>
     <td><img src="https://img.shields.io/badge/-Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white"/></td>
-    <td><img src="https://img.shields.io/badge/mysql-4479A1?style=flat&logo=mysql&logoColor=white"/></td>
+    <td><img src="https://img.shields.iㄱo/badge/mysql-4479A1?style=flat&logo=mysql&logoColor=white"/></td>
   </tr>  
 </table><br><br> 
 
