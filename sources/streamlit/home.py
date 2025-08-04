@@ -2,7 +2,13 @@ import streamlit as st
 import pandas as pd
 import pymysql
 import plotly.express as px
+from plotly.subplots import make_subplots
 import json
+import datetime
+import requests
+
+
+API_KEY = "HZXgpAiQBEp9H9gcEzePi/qvWpMqa2Vav8W9Jaounr+S2hvMRYMdBlOqdWrVp81amfnm6W0B1IhPD+t9DyQAfQ=="
 
 def get_dbconfig():
     with open("../config.json", encoding="UTF-8") as f:
@@ -29,6 +35,43 @@ def run_query(query, params=None):
         df = pd.DataFrame(rows)
     conn.close()
     return df
+
+# 날씨 API 호출 함수
+def get_weather():
+    now = datetime.datetime.now()
+    base_date = now.strftime('%Y%m%d')
+    base_time = (now - datetime.timedelta(hours=1)).strftime('%H') + "00"
+    nx, ny = 58, 125  # 서울 금천구
+
+    url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst'
+    params = {
+        'serviceKey': API_KEY,
+        'pageNo': '1',
+        'numOfRows': '1000',
+        'dataType': 'JSON',
+        'base_date': base_date,
+        'base_time': base_time,
+        'nx': nx,
+        'ny': ny
+    }
+
+    response = requests.get(url, params=params)
+    items = response.json().get('response', {}).get('body', {}).get('items', {}).get('item', [])
+    data = {}
+
+    for item in items:
+        cat = item.get('category')
+        val = item.get('obsrValue')
+        if cat == 'T1H':
+            data['기온'] = f"{val}°C"
+        elif cat == 'REH':
+            data['습도'] = f"{val}%"
+        elif cat == 'WSD':
+            data['풍속'] = f"{val} m/s"
+        elif cat == 'RN1':
+            data['강수량'] = f"{val} mm"
+
+    return data
 
 # -- CSS 스타일 --
 st.markdown("""
@@ -65,13 +108,42 @@ st.markdown("""
     }
     </style>
     """, unsafe_allow_html=True)
+
 st.set_page_config(layout="wide")
 st.sidebar.title("🚗 자동차 등록 현황")
 category = st.sidebar.selectbox("카테고리를 선택하세요", ["홈", "시도별/차종별/용도별 분석", "전기차/충전소 분석"])
 
-if category == "홈":
-    st.markdown("## 🚘 대한민국 자동차 데이터 요약")
 
+if category == "홈":
+    st.title("🏠 메인 대시보드")
+    st.markdown("---")
+    col_news, col_weather = st.columns([1, 1])
+    # 📰 자동차 관련 뉴스
+    with col_news:
+        st.markdown("### 📰 자동차 관련 뉴스")
+        st.markdown("#### 대통령실 '자동차 관세 15%…쌀·소고기 시장 추가 개방 않기로'")
+        st.write("미국과 한국 간 관세 협상에서 상호 관세를 25%에서 15%로 낮추기로 합의했습니다. "
+                "8월 1일부터 적용되며, 자동차가 주요 수출 품목으로 포함되었습니다.")
+
+    # 🌤️ 오늘의 날씨
+    with col_weather:
+        st.markdown("### 🌤️ 오늘의 날씨")
+        st.markdown("**금천구 가산동**")
+        
+        try:
+            weather = get_weather()
+            with st.container():
+                st.markdown(f"""
+                    - 기온: {weather.get('기온', '정보 없음')}
+                    - 습도: {weather.get('습도', '-')}
+                    - 풍속: {weather.get('풍속', '-')}
+                    - 강수량: {weather.get('강수량', '-')}
+                    """)
+        except Exception as e:
+            st.warning(f"날씨 데이터를 불러오는 데 실패했습니다: {e}")
+        
+    st.markdown("---")
+    st.markdown("## 🚘 대한민국 자동차 데이터 요약")
     # 📊 최신 전체 차량 등록 수
     car_query = """
         SELECT year, SUM(registered_cars) AS total
@@ -109,16 +181,17 @@ if category == "홈":
     chg_latest = chg_df.iloc[0]['total']
     chg_prev = chg_df.iloc[1]['total']
     chg_delta = round(((chg_latest - chg_prev) / chg_prev) * 100, 2)
-
+    
     # 📊 메트릭 박스 표시
     col1, col2, col3 = st.columns(3)
 
     with col1:
         st.metric(label="전체 등록 차량 수", value=f"{car_latest:,} 만대", delta=f"{car_delta:+.1f}% YoY")
-
+        ev_per_charger = round(chg_latest / ev_latest, 2)
+        st.metric("전기차 1기당 충전소 수", value=f"{ev_per_charger} 대/기")
     with col2:
         st.metric(label="전기차 등록 수", value=f"{ev_latest:,} 대", delta=f"{ev_delta:+.1f}% YoY")
-
+        
     with col3:
         st.metric(label="충전소 수", value=f"{chg_latest:,} 기", delta=f"{chg_delta:+.1f}% YoY")
 
@@ -127,13 +200,10 @@ if category == "홈":
     ### 🧭 **요약 인사이트**
 
     - 대한민국에는 현재 **{:,}대의 자동차**가 등록되어 있습니다.
-    - 이 중 **전기차는 약 {:.1f}%**에 불과하며, 최근 **{:+.1f}% 증가**했습니다.
+    - 이 중 전기차 비중은 약 {:.1f}%**에 불과하며, 최근 **{:+.1f}% 증가**했습니다.
     - 충전소도 함께 증가하고 있지만 **지역 편차**가 큽니다.
-
-    📌 **궁금한가요?**  
-    ▶ 왼쪽 메뉴에서 **[시도별/차종별/용도별 분석] 또는 [전기차/충전소 분석]** 탭을 선택해 확인해보세요.
     ---
-    """.format(car_latest, (ev_latest / car_latest) * 100, ev_delta))
+    """.format(car_latest, (ev_latest / (car_latest*10000)) * 100, ev_delta))
 
 
 elif category == "시도별/차종별/용도별 분석":
@@ -214,17 +284,17 @@ elif category == "시도별/차종별/용도별 분석":
 
                 st.markdown(f"""<div class="stat-box">
                     <div class="stat-label">총 등록 차량 수</div>
-                    <div class="stat-value">{total_cars:,} 대</div>
+                    <div class="stat-value">{total_cars:,} 만대</div>
                 </div>""", unsafe_allow_html=True)
 
                 st.markdown(f"""<div class="stat-box">
                     <div class="stat-label">연도별 평균 등록 수</div>
-                    <div class="stat-value">{avg_length:,} 대</div>
+                    <div class="stat-value">{avg_length:,} 만대</div>
                 </div>""", unsafe_allow_html=True)
 
                 st.markdown(f"""<div class="stat-box">
                     <div class="stat-label">최대 등록 대수</div>
-                    <div class="stat-value">{max_value:,} 대 ({max_year}년)</div>
+                    <div class="stat-value">{max_value:,} 만대 ({max_year}년)</div>
                 </div>""", unsafe_allow_html=True)
 
         else:
@@ -289,17 +359,17 @@ elif category == "시도별/차종별/용도별 분석":
 
                 st.markdown(f"""<div class="stat-box">
                     <div class="stat-label">총 등록 차량 수</div>
-                    <div class="stat-value">{total_cars:,} 대</div>
+                    <div class="stat-value">{total_cars:,} 만대</div>
                 </div>""", unsafe_allow_html=True)
 
                 st.markdown(f"""<div class="stat-box">
                     <div class="stat-label">연도별 평균 등록 수</div>
-                    <div class="stat-value">{avg_cars:,} 대</div>
+                    <div class="stat-value">{avg_cars:,} 만대</div>
                 </div>""", unsafe_allow_html=True)
 
                 st.markdown(f"""<div class="stat-box">
                     <div class="stat-label">최대 등록 대수</div>
-                    <div class="stat-value">{max_value:,} 대 ({max_year}년)</div>
+                    <div class="stat-value">{max_value:,} 만대 ({max_year}년)</div>
                 </div>""", unsafe_allow_html=True)
 
         else:
@@ -363,17 +433,17 @@ elif category == "시도별/차종별/용도별 분석":
 
                 st.markdown(f"""<div class="stat-box">
                     <div class="stat-label">총 등록 차량 수</div>
-                    <div class="stat-value">{total_cars:,} 대</div>
+                    <div class="stat-value">{total_cars:,} 만대</div>
                 </div>""", unsafe_allow_html=True)
 
                 st.markdown(f"""<div class="stat-box">
                     <div class="stat-label">연도별 평균 등록 수</div>
-                    <div class="stat-value">{avg_cars:,} 대</div>
+                    <div class="stat-value">{avg_cars:,} 만대</div>
                 </div>""", unsafe_allow_html=True)
 
                 st.markdown(f"""<div class="stat-box">
                     <div class="stat-label">최대 등록 대수</div>
-                    <div class="stat-value">{max_value:,} 대 ({max_year}년)</div>
+                    <div class="stat-value">{max_value:,} 만대 ({max_year}년)</div>
                 </div>""", unsafe_allow_html=True)
 
         else:
@@ -408,9 +478,11 @@ elif category == "전기차/충전소 분석":
             df_ev = df_ev.groupby('year')['sum_total'].sum().reset_index()
 
             fig = px.line(df_ev, x='year', y='sum_total',
-                        title="연도별 전기차 등록 추이",
+                        title="🚗연도별 전기차 등록 추이",
                         labels={'sum_total': '전기차 등록 수', 'year': '연도'})
             st.plotly_chart(fig, use_container_width=True)
+            with st.expander("📋 원본 데이터 보기"):
+                st.dataframe(df_ev)
         else:
             st.warning("전기차 등록 데이터를 불러올 수 없습니다.")
 
@@ -428,8 +500,124 @@ elif category == "전기차/충전소 분석":
             df_chg_sum = df_chg.groupby(['year', 'charging_speed'])['sum_total'].sum().reset_index()
 
             fig = px.line(df_chg_sum, x='year', y='sum_total', color='charging_speed',
-                        title="충전속도별 충전소 구축 추이",
+                        title="🔌충전속도별 충전소 구축 추이",
                         labels={'sum_total': '충전기 수', 'year': '연도', 'charging_speed': '충전속도'})
             st.plotly_chart(fig, use_container_width=True)
+            with st.expander("📋 원본 데이터 보기"):
+                st.dataframe(df_chg_sum)
         else:
             st.warning("충전소 데이터를 불러올 수 없습니다.")
+    # 📊 지역별 전기차/충전소 비율
+    with tab3:
+
+        # 📅 연도 기준 날짜 변환
+        start_date = f"{start_year}-01-01"
+        end_date = f"{end_year}-12-31"
+
+        # 전기차 데이터 가져오기
+        ev_query = """
+            SELECT * FROM elec_car_registration_by_region
+            WHERE date_recorded BETWEEN %s AND %s
+        """
+        ev_df = run_query(ev_query, (start_date, end_date))
+
+        # 충전소 데이터 가져오기
+        chg_query = """
+            SELECT * FROM charging_station_by_region
+            WHERE date_recorded BETWEEN %s AND %s
+        """
+        chg_df = run_query(chg_query, (start_date, end_date))
+
+        if not ev_df.empty and not chg_df.empty:
+            latest_ev = ev_df.sort_values("date_recorded", ascending=False).iloc[0]
+            latest_chg = chg_df.sort_values("date_recorded", ascending=False).iloc[0]
+
+            ev_regions = set(ev_df.columns) - {"id", "date_recorded", "sum_total", "created_at"}
+            chg_regions = set(chg_df.columns) - {"id", "date_recorded", "charging_speed", "sum_total", "created_at"}
+            common_regions = sorted(ev_regions & chg_regions)
+
+            # 최신 비율 계산
+            ratio_data = []
+            for region in common_regions:
+                ev_count = latest_ev.get(region, 0)
+                chg_count = latest_chg.get(region, 0)
+                if chg_count and ev_count is not None:
+                    ratio = round(ev_count / chg_count, 2)
+                    ratio_data.append({
+                        "지역": region,
+                        "전기차 수": int(ev_count),
+                        "충전소 수": int(chg_count),
+                        "전기차/충전소 비율": ratio
+                    })
+
+            df_ratio = pd.DataFrame(ratio_data)
+
+            # 연도별 충전소 비율 계산
+            chg_percent_query = f"""
+                SELECT date_recorded, {', '.join(common_regions)}, sum_total
+                FROM charging_station_by_region
+                WHERE YEAR(date_recorded) BETWEEN %s AND %s
+            """
+            percent_df = run_query(chg_percent_query, (start_year, end_year))
+
+            if not percent_df.empty:
+                percent_df['year'] = pd.to_datetime(percent_df['date_recorded']).dt.year
+
+                yearly_ratios = []
+                for year, group in percent_df.groupby("year"):
+                    total = group[common_regions].sum().sum()
+                    year_data = {"year": year}
+                    for region in common_regions:
+                        region_sum = group[region].sum()
+                        ratio = round((region_sum / total) * 100, 2) if total else 0
+                        year_data[region] = ratio
+                    yearly_ratios.append(year_data)
+
+                df_yearly_ratio = pd.DataFrame(yearly_ratios).sort_values("year")
+                df_ratio_melted = df_yearly_ratio.melt(id_vars="year", var_name="지역", value_name="충전소 비율(%)")
+
+                # ---- 📊 통합 subplot ----
+                fig_combined = make_subplots(
+                    rows=2, cols=1,
+                    shared_xaxes=False,
+                    vertical_spacing=0.15,
+                    subplot_titles=[
+                        "① 최신 지역별 전기차/충전소 비율 (대/기)",
+                        "② 연도별 지역 충전소 비율 변화 (%)"
+                    ]
+                )
+
+                # (1) 상단: 막대그래프
+                fig_bar = px.bar(df_ratio, x="지역", y="전기차/충전소 비율")
+                for trace in fig_bar.data:
+                    fig_combined.add_trace(trace, row=1, col=1)
+
+                # (2) 하단: 선그래프
+                fig_line = px.line(df_ratio_melted, x="year", y="충전소 비율(%)", color="지역", markers=True)
+                for trace in fig_line.data:
+                    fig_combined.add_trace(trace, row=2, col=1)
+
+                # 레이아웃 설정
+                fig_combined.update_layout(
+                    height=800,
+                    title_text="📊 지역별 전기차 충전소 비율 통합 분석",
+                    showlegend=True,
+                    hovermode="x unified"
+                )
+
+                # 출력
+                st.plotly_chart(fig_combined, use_container_width=True)
+
+                # 데이터 보기
+                with st.expander("📋 원본 데이터 보기"):
+                    st.markdown("#### ✅ 최신 비율 데이터")
+                    st.dataframe(df_ratio)
+                    st.markdown("#### 📈 연도별 비율 데이터")
+                    st.dataframe(df_yearly_ratio)
+            else:
+                st.warning("연도별 충전소 비율 데이터를 가져오지 못했습니다.")
+        else:
+            st.warning("선택한 기간에 해당하는 데이터가 부족합니다.")
+
+
+
