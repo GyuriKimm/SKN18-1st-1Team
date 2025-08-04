@@ -6,7 +6,7 @@ from plotly.subplots import make_subplots
 import json
 import datetime
 import requests
-
+from news_module import CarNewsCrawler
 
 API_KEY = "HZXgpAiQBEp9H9gcEzePi/qvWpMqa2Vav8W9Jaounr+S2hvMRYMdBlOqdWrVp81amfnm6W0B1IhPD+t9DyQAfQ=="
 
@@ -121,9 +121,77 @@ if category == "홈":
     # 📰 자동차 관련 뉴스
     with col_news:
         st.markdown("### 📰 자동차 관련 뉴스")
-        st.markdown("#### 대통령실 '자동차 관세 15%…쌀·소고기 시장 추가 개방 않기로'")
-        st.write("미국과 한국 간 관세 협상에서 상호 관세를 25%에서 15%로 낮추기로 합의했습니다. "
-                "8월 1일부터 적용되며, 자동차가 주요 수출 품목으로 포함되었습니다.")
+        # 뉴스 크롤링 부분
+        col1, col2 = st.columns([2,1])
+        
+        with col1:
+            #news crawl
+            try:
+                crawler = CarNewsCrawler(headless=True, debug=True)
+                articles = crawler.crawl_all_sources(max_articles_per_source=2)
+                crawler.cleanup()
+                            
+                if articles:
+                    # Save to files
+                    crawler.news_data = articles
+                    crawler.save_to_json("car_news.json")
+                    crawler.save_to_csv("car_news.csv")
+                    crawler.save_to_txt("car_news.txt")
+                                
+                    st.success(f"✅ Successfully crawled {len(articles)} articles!")
+                    st.session_state.articles = articles
+                    #st.session_state.last_crawl = datetime.now()
+                else:
+                    st.error("❌ No articles found. Please try again.")
+                                
+            except Exception as e:
+                st.error(f"❌ Error during crawling: {str(e)}")  
+
+            if "articles" in st.session_state and st.session_state.articles:
+                articles = st.session_state.articles
+
+                # Filter options
+                st.subheader("🔍 Filter Options")
+                col_filter1, col_filter2 = st.columns(2)
+                
+                with col_filter1:
+                    search_term = st.text_input("Search in titles", "")
+                
+                with col_filter2:
+                    sort_by = st.selectbox("Sort by", ["Date (Newest)", "Date (Oldest)", "Title A-Z", "Title Z-A"])
+                
+                # Filter articles
+                filtered_articles = articles
+                
+                if search_term:
+                    filtered_articles = [a for a in filtered_articles if search_term.lower() in a['title'].lower()]
+
+                # Sort articles
+                if sort_by == "Date (Newest)":
+                    filtered_articles.sort(key=lambda x: x.get('date', ''), reverse=True)
+                elif sort_by == "Date (Oldest)":
+                    filtered_articles.sort(key=lambda x: x.get('date', ''))
+                elif sort_by == "Title A-Z":
+                    filtered_articles.sort(key=lambda x: x['title'])
+                elif sort_by == "Title Z-A":
+                    filtered_articles.sort(key=lambda x: x['title'], reverse=True)
+                
+                # Display articles
+                st.write(f"Showing {len(filtered_articles)} of {len(articles)} articles")
+                
+                for i, article in enumerate(filtered_articles):
+                    with st.container():
+                        st.markdown(f"""
+                        <div class="news-card">
+                            <h3>{article['title']}</h3>
+                            <span class="source-badge">{article['source']}</span>
+                            <div class="date-text">📅 {article['date']}</div>
+                            <a href="{article['link']}" target="_blank">🔗 Read Article</a>
+                        </div>
+                        """, unsafe_allow_html=True)
+            
+            else:
+                st.info("ℹ️ No news data available. Press the button to crawl news or load saved data.")
 
     # 🌤️ 오늘의 날씨
     with col_weather:
