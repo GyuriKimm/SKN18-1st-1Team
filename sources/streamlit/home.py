@@ -4,11 +4,11 @@ import pymysql
 import plotly.express as px
 from plotly.subplots import make_subplots
 import json
-import datetime
-import requests
-from news_module import CarNewsCrawler
 
-API_KEY = "HZXgpAiQBEp9H9gcEzePi/qvWpMqa2Vav8W9Jaounr+S2hvMRYMdBlOqdWrVp81amfnm6W0B1IhPD+t9DyQAfQ=="
+from utils.news_module import CarNewsCrawler
+from utils.weather_module import get_weather
+
+
 
 def get_dbconfig():
     with open("../config.json", encoding="UTF-8") as f:
@@ -35,43 +35,6 @@ def run_query(query, params=None):
         df = pd.DataFrame(rows)
     conn.close()
     return df
-
-# 날씨 API 호출 함수
-def get_weather():
-    now = datetime.datetime.now()
-    base_date = now.strftime('%Y%m%d')
-    base_time = (now - datetime.timedelta(hours=1)).strftime('%H') + "00"
-    nx, ny = 58, 125  # 서울 금천구
-
-    url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst'
-    params = {
-        'serviceKey': API_KEY,
-        'pageNo': '1',
-        'numOfRows': '1000',
-        'dataType': 'JSON',
-        'base_date': base_date,
-        'base_time': base_time,
-        'nx': nx,
-        'ny': ny
-    }
-
-    response = requests.get(url, params=params)
-    items = response.json().get('response', {}).get('body', {}).get('items', {}).get('item', [])
-    data = {}
-
-    for item in items:
-        cat = item.get('category')
-        val = item.get('obsrValue')
-        if cat == 'T1H':
-            data['기온'] = f"{val}°C"
-        elif cat == 'REH':
-            data['습도'] = f"{val}%"
-        elif cat == 'WSD':
-            data['풍속'] = f"{val} m/s"
-        elif cat == 'RN1':
-            data['강수량'] = f"{val} mm"
-
-    return data
 
 # -- CSS 스타일 --
 st.markdown("""
@@ -123,7 +86,6 @@ if category == "홈":
         st.markdown("### 📰 자동차 관련 뉴스")
         # 뉴스 크롤링 부분
         col1, col2 = st.columns([2,1])
-        
         with col1:
             #news crawl
             try:
@@ -132,15 +94,9 @@ if category == "홈":
                 crawler.cleanup()
                             
                 if articles:
-                    # Save to files
                     crawler.news_data = articles
-                    crawler.save_to_json("car_news.json")
-                    crawler.save_to_csv("car_news.csv")
-                    crawler.save_to_txt("car_news.txt")
                                 
-                    st.success(f"✅ Successfully crawled {len(articles)} articles!")
                     st.session_state.articles = articles
-                    #st.session_state.last_crawl = datetime.now()
                 else:
                     st.error("❌ No articles found. Please try again.")
                                 
@@ -150,40 +106,14 @@ if category == "홈":
             if "articles" in st.session_state and st.session_state.articles:
                 articles = st.session_state.articles
 
-                # Filter options
-                st.subheader("🔍 Filter Options")
-                col_filter1, col_filter2 = st.columns(2)
-                
-                with col_filter1:
-                    search_term = st.text_input("Search in titles", "")
-                
-                with col_filter2:
-                    sort_by = st.selectbox("Sort by", ["Date (Newest)", "Date (Oldest)", "Title A-Z", "Title Z-A"])
-                
                 # Filter articles
                 filtered_articles = articles
-                
-                if search_term:
-                    filtered_articles = [a for a in filtered_articles if search_term.lower() in a['title'].lower()]
-
-                # Sort articles
-                if sort_by == "Date (Newest)":
-                    filtered_articles.sort(key=lambda x: x.get('date', ''), reverse=True)
-                elif sort_by == "Date (Oldest)":
-                    filtered_articles.sort(key=lambda x: x.get('date', ''))
-                elif sort_by == "Title A-Z":
-                    filtered_articles.sort(key=lambda x: x['title'])
-                elif sort_by == "Title Z-A":
-                    filtered_articles.sort(key=lambda x: x['title'], reverse=True)
-                
-                # Display articles
-                st.write(f"Showing {len(filtered_articles)} of {len(articles)} articles")
                 
                 for i, article in enumerate(filtered_articles):
                     with st.container():
                         st.markdown(f"""
                         <div class="news-card">
-                            <h3>{article['title']}</h3>
+                            <h4>{article['title']}</h4>
                             <span class="source-badge">{article['source']}</span>
                             <div class="date-text">📅 {article['date']}</div>
                             <a href="{article['link']}" target="_blank">🔗 Read Article</a>
@@ -256,7 +186,7 @@ if category == "홈":
     with col1:
         st.metric(label="전체 등록 차량 수", value=f"{car_latest:,} 만대", delta=f"{car_delta:+.1f}% YoY")
         ev_per_charger = round(chg_latest / ev_latest, 2)
-        st.metric("전기차 1기당 충전소 수", value=f"{ev_per_charger} 대/기")
+        st.metric("전기차 1대당 충전소 수", value=f"{ev_per_charger} 대/기")
     with col2:
         st.metric(label="전기차 등록 수", value=f"{ev_latest:,} 대", delta=f"{ev_delta:+.1f}% YoY")
         
