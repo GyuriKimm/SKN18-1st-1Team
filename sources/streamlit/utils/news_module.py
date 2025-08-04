@@ -1,16 +1,11 @@
-import requests
-from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-import json
-import csv
 import time
 from datetime import datetime
-import os
-from typing import List, Dict, Optional
+from typing import List, Dict
 import logging
 
 # Set up logging
@@ -52,88 +47,6 @@ class CarNewsCrawler:
         except Exception as e:
             logger.error(f"Failed to initialize Selenium: {e}")
             self.driver = None
-            
-    def debug_page_structure(self, url: str = "https://www.yna.co.kr/industry/automobile"):
-        """
-        Debug method to analyze page structure and content
-        """
-        try:
-            logger.info(f"Debug: Analyzing page structure for {url}")
-            self.driver.get(url)
-            
-            # Wait for page to load
-            time.sleep(3)
-            
-            # Get page title
-            page_title = self.driver.title
-            logger.info(f"Debug: Page title: {page_title}")
-            
-            # Find all links on the page
-            all_links = self.driver.find_elements(By.TAG_NAME, "a")
-            logger.info(f"Debug: Found {len(all_links)} total links on page")
-            
-            # Analyze link texts and URLs - focus on news links
-            news_links = []
-            other_links = []
-            
-            for link in all_links[:30]:  # Check first 30 links
-                try:
-                    text = link.text.strip()
-                    href = link.get_attribute("href")
-                    
-                    if text and href:
-                        # Check if it's a news link
-                        href_lower = href.lower()
-                        text_lower = text.lower()
-                        
-                        # Look for news-related patterns
-                        is_news_link = any(pattern in href_lower for pattern in ['/view/', '/news/', '/article/', '/automobile/']) or \
-                                        any(pattern in text_lower for pattern in ['뉴스', '기사', 'news', 'article'])
-                        
-                        if is_news_link:
-                            news_links.append((text, href))
-                        else:
-                            other_links.append((text, href))
-                            
-                except Exception as e:
-                    continue
-            
-            logger.info(f"Debug: Found {len(news_links)} news-related links:")
-            for text, href in news_links[:10]:
-                logger.info(f"Debug: - {text[:50]} -> {href}")
-            
-            logger.info(f"Debug: Found {len(other_links)} other links:")
-            for text, href in other_links[:10]:
-                logger.info(f"Debug: - {text[:50]} -> {href}")
-            
-            # Check for specific CSS classes that might contain news
-            common_selectors = [
-                ".list-type01", ".list-type02", ".list-type03",
-                ".news-list", ".article-list", ".list-news",
-                ".news-item", "article", ".item"
-            ]
-            
-            for selector in common_selectors:
-                try:
-                    elements = self.driver.find_elements(By.CSS_SELECTOR, selector)
-                    if elements:
-                        logger.info(f"Debug: Found {len(elements)} elements with selector '{selector}'")
-                        if elements[0].text.strip():
-                            logger.info(f"Debug: First element text: {elements[0].text[:100]}")
-                            
-                            # Check for dates in the first few elements
-                            for i, element in enumerate(elements[:3]):
-                                try:
-                                    date_elements = element.find_elements(By.CSS_SELECTOR, "time, .date, .time, .published")
-                                    if date_elements:
-                                        logger.info(f"Debug: Element {i+1} has date: {date_elements[0].text}")
-                                except:
-                                    pass
-                except:
-                    continue
-                    
-        except Exception as e:
-            logger.error(f"Debug: Error analyzing page structure: {e}")
 
     def crawl_korean_news(self, max_articles: int = 10) -> List[Dict]:
         """
@@ -337,131 +250,8 @@ class CarNewsCrawler:
         
         return all_articles
     
-    def save_to_json(self, filename: str = "car_news.json"):
-        """
-        Save news data to JSON file
-        
-        Args:
-            filename (str): Output filename
-        """
-        try:
-            with open(filename, 'w', encoding='utf-8') as f:
-                json.dump({
-                    "crawl_date": datetime.now().isoformat(),
-                    "total_articles": len(self.news_data),
-                    "articles": self.news_data
-                }, f, indent=2, ensure_ascii=False)
-            
-            logger.info(f"News data saved to {filename}")
-            
-        except Exception as e:
-            logger.error(f"Failed to save JSON file: {e}")
-    
-    def save_to_csv(self, filename: str = "car_news.csv"):
-        """
-        Save news data to CSV file
-        
-        Args:
-            filename (str): Output filename
-        """
-        try:
-            with open(filename, 'w', newline='', encoding='utf-8') as f:
-                if self.news_data:
-                    writer = csv.DictWriter(f, fieldnames=self.news_data[0].keys())
-                    writer.writeheader()
-                    writer.writerows(self.news_data)
-            
-            logger.info(f"News data saved to {filename}")
-            
-        except Exception as e:
-            logger.error(f"Failed to save CSV file: {e}")
-    
-    def save_to_txt(self, filename: str = "car_news.txt"):
-        """
-        Save news data to readable text file
-        
-        Args:
-            filename (str): Output filename
-        """
-        try:
-            with open(filename, 'w', encoding='utf-8') as f:
-                f.write(f"CAR NEWS REPORT\n")
-                f.write(f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-                f.write(f"Total Articles: {len(self.news_data)}\n")
-                f.write("=" * 80 + "\n\n")
-                
-                for i, article in enumerate(self.news_data, 1):
-                    f.write(f"{i}. {article['title']}\n")
-                    f.write(f"   Source: {article['source']}\n")
-                    f.write(f"   Date: {article['date']}\n")
-                    f.write(f"   Link: {article['link']}\n")
-                    if article['summary']:
-                        f.write(f"   Summary: {article['summary']}\n")
-                    f.write("\n" + "-" * 80 + "\n\n")
-            
-            logger.info(f"News data saved to {filename}")
-            
-        except Exception as e:
-            logger.error(f"Failed to save text file: {e}")
-    
-    def display_news_summary(self):
-        """Display a summary of collected news"""
-        if not self.news_data:
-            print("No news data available. Run crawl_all_sources() first.")
-            return
-        
-        print(f"\n{'='*60}")
-        print(f"CAR NEWS SUMMARY")
-        print(f"{'='*60}")
-        print(f"Total Articles: {len(self.news_data)}")
-        print(f"Sources: {set(article['source'] for article in self.news_data)}")
-        print(f"Latest Update: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        print(f"{'='*60}\n")
-        
-        for i, article in enumerate(self.news_data[:10], 1):  # Show first 10
-            print(f"{i}. {article['title']}")
-            print(f"   Source: {article['source']} | Date: {article['date']}")
-            if article['summary']:
-                print(f"   {article['summary'][:100]}...")
-            print()
-    
     def cleanup(self):
         """Clean up resources"""
         if hasattr(self, 'driver') and self.driver:
             self.driver.quit()
             logger.info("WebDriver closed successfully")
-
-def main():
-    """Main function to run the car news crawler"""
-    crawler = CarNewsCrawler(headless=True)
-    
-    try:
-        # Crawl news from all sources
-        print("Starting car news crawling...")
-        articles = crawler.crawl_all_sources(max_articles_per_source=5)
-        
-        if articles:
-            # Save to different formats
-            crawler.save_to_json("car_news.json")
-            crawler.save_to_csv("car_news.csv")
-            crawler.save_to_txt("car_news.txt")
-            
-            # Display summary
-            crawler.display_news_summary()
-            
-            print(f"\nCrawling completed! Found {len(articles)} articles.")
-            print("Files created:")
-            print("- car_news.json (JSON format)")
-            print("- car_news.csv (CSV format)")
-            print("- car_news.txt (Readable text format)")
-        else:
-            print("No articles were found.")
-            
-    except Exception as e:
-        logger.error(f"Error in main execution: {e}")
-        
-    finally:
-        crawler.cleanup()
-
-if __name__ == "__main__":
-    main()
