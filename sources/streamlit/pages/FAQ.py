@@ -77,8 +77,10 @@ if __name__=="__main__":
     st.title(f"❓ {faq_brand}")
 
     # 카테고리 목록 만들기 (중복 제거)
+    col1, col2, _ = st.columns([3, 1, 6]) 
     all_categories = faq_df[2].dropna().unique().tolist()
-    selected_category = st.selectbox(" 카테고리를 선택하세요: ", ["카테고리를 선택하세요"] + all_categories)
+    with col1:
+        selected_category = st.selectbox(" 카테고리를 선택하세요: ", ["카테고리를 선택하세요"] + all_categories)
     st.markdown("---")
     
     # 카테고리 선택 분기
