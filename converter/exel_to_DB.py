@@ -20,18 +20,18 @@ def clean_column_name(name):
 def create_table_if_not_exists():
     """Create the table with real region names as columns"""
     connection = pymysql.connect(
-        host="localhost", 
+        host="", 
         port=3306, 
-        user="urstory", 
-        password="1234", 
-        database="examplesdb", 
+        user="", 
+        password="", 
+        database="", 
         charset="utf8"
     )
     cur = connection.cursor()
     
     # First, let's read the data to get real column names
     df = pd.read_excel(
-        r"C:\dev\study\python\web_crawl\source\전기차등록현황.xlsx", 
+        "../docs/전기차등록현황.xlsx", 
         engine='openpyxl', 
         header=3
     )
@@ -55,7 +55,7 @@ def create_table_if_not_exists():
         columns_sql.append(f"`{cleaned_region}` INT")
 
     create_table_sql = f"""
-    CREATE TABLE IF NOT EXISTS car_registration_by_region (
+    CREATE TABLE IF NOT EXISTS elec_car_registration_by_region (
         `id` INT AUTO_INCREMENT PRIMARY KEY,
         `date_recorded` DATE,
         {', '.join(columns_sql)},
@@ -79,11 +79,11 @@ def db_insert(data, region_cols, cleaned_region_cols):
     print(f"📊 Inserting {len(data)} records...")
     
     connection = pymysql.connect(
-        host="localhost", 
+        host="", 
         port=3306, 
-        user="urstory", 
-        password="1234", 
-        database="examplesdb", 
+        user="", 
+        password="", 
+        database="", 
         charset="utf8"
     )
     cur = connection.cursor()
@@ -96,7 +96,7 @@ def db_insert(data, region_cols, cleaned_region_cols):
     column_names = ['`date_recorded`'] + [f'`{col}`' for col in cleaned_region_cols] + ['`sum_total`']
     
     query = f"""
-    INSERT INTO car_registration_by_region 
+    INSERT INTO elec_car_registration_by_region 
     ({', '.join(column_names)}) 
     VALUES ({placeholders_str})
     ON DUPLICATE KEY UPDATE
@@ -122,7 +122,7 @@ def get_region_data(region_cols, cleaned_region_cols):
     
     # Read Excel file starting from row 4 (index 3)
     df = pd.read_excel(
-        r"C:\dev\study\python\web_crawl\source\전기차등록현황.xlsx", 
+        "../docs/전기차등록현황.xlsx", 
         engine='openpyxl', 
         header=3
     )

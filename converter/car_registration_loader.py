@@ -67,7 +67,7 @@ def get_region_map():
 
 
 def load_region_data():
-    df = load_excel("./시도별 자동차 등록 현황.xlsx")
+    df = load_excel("../docs/시도별 자동차 등록 현황.xlsx")
     regions = df.index.tolist()[1:-2]
     create_region_tables()
     insert_regions(regions)
@@ -108,7 +108,7 @@ def create_car_type_table():
 
 
 def load_car_type_data():
-    df = load_excel("./차종별 자동차 등록 현황.xlsx")
+    df = load_excel("../docs/차종별 자동차 등록 현황.xlsx")
     car_types = ['승용차', '승합차', '화물차', '특수차']
     create_car_type_table()
 
@@ -144,7 +144,7 @@ def create_usage_table():
 
 
 def load_usage_data():
-    df = load_excel("./용도별 자동차 등록 현황.xlsx")
+    df = load_excel("../docs/용도별 자동차 등록 현황.xlsx")
     usage_types = ['관용', '자가용', '영업용']
     create_usage_table()
 

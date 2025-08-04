@@ -7,18 +7,18 @@ import re
 def create_table_if_not_exists():
     """Create the table with charging speed and region columns"""
     connection = pymysql.connect(
-        host="localhost", 
+        host="", 
         port=3306, 
-        user="urstory", 
-        password="1234", 
-        database="examplesdb", 
+        user="", 
+        password="", 
+        database="", 
         charset="utf8"
     )
     cur = connection.cursor()
     
     # First, let's read the data to get real column names
     df = pd.read_excel(
-        r"C:\dev\study\python\web_crawl\source\충전기구축현황.xlsx",  # Change to your file name
+        "../docs/충전기구축현황.xlsx",  # Change to your file name
         engine='openpyxl', 
         header=3
     )
@@ -81,11 +81,11 @@ def db_insert(data, region_cols, cleaned_region_cols):
     print(f"📊 Inserting {len(data)} records...")
     
     connection = pymysql.connect(
-        host="localhost", 
+        host="", 
         port=3306, 
-        user="urstory", 
-        password="1234", 
-        database="examplesdb", 
+        user="", 
+        password="", 
+        database="", 
         charset="utf8"
     )
     cur = connection.cursor()
@@ -124,7 +124,7 @@ def get_charging_station_data(region_cols, cleaned_region_cols):
     
     # Read Excel file starting from row 4 (index 3)
     df = pd.read_excel(
-        r"C:\dev\study\python\web_crawl\source\충전기구축현황.xlsx",  # Change to your file name
+        "../docs/충전기구축현황.xlsx",  # Change to your file name
         engine='openpyxl', 
         header=3
     )
