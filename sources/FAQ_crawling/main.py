@@ -8,6 +8,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from database import Database
 from infiniti_FAQ import InfinitiFAQCrawler
 from genesis_FAQ import GenesisFAQCrawler
+from chevrolet_FAQ import ChevroletFAQCrawler
 
 
 def get_config():
@@ -33,4 +34,12 @@ if __name__ == "__main__":
     genesis_FAQ = genesis_ins.run()
     db_ins.connect()
     db_ins.insert(genesis_FAQ)
+    db_ins.close_connection()
+
+    ## CHEVROLET
+    db_ins = Database(**config["database"])
+    chevrolet_ins = ChevroletFAQCrawler()
+    chevrolet_FAQ = chevrolet_ins.run()
+    db_ins.connect()
+    db_ins.insert(chevrolet_FAQ)
     db_ins.close_connection()
