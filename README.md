@@ -19,25 +19,29 @@
     <td><img src="https://img.shields.io/badge/python-3776AB?style=flat&logo=python&logoColor=white"/></td>
     <td><img src="https://img.shields.io/badge/-Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white"/></td>
     <td><img src="https://img.shields.io/badge/mysql-4479A1?style=flat&logo=mysql&logoColor=white"/></td>
-    <td><img src="https://img.shields.io/badge/Selenium-43B02A?logo=Selenium&logoColor=white"/></td>
-  </tr>
-</table>
+  </tr>  
+</table><br><br> 
 
 ## 🔎Data
-- 지표누리 자동차 등록현황 <br> https://www.index.go.kr/unity/potal/main/EachDtlPageDetail.do?idx_cd=1257
-- 전국 전기차 충전소 <br> https://chargeinfo.ksga.org/front/statistics/charger
-- 전국 전기차 등록대수 <br> https://chargeinfo.ksga.org/front/statistics/evCar/
 
-### 발표자료
-## 1. 개요
+## 📈Flow Chart
 
-본 대시보드는 대한민국의 자동차 등록 현황 및 전기차/충전소 데이터를 시각적으로 분석하고 사용자에게 직관적인 정보를 제공합니다.
+## ERD(Entity-Relationship Diagram)
 
----
+## 발표자료
+
+## 1. 요구사항
+- 전국 자동차 등록 현황 및 기업 FAQ 조회 시스템
+- 데이터 수집 및 크롤링
+- 데이터베이스 설계
+- 데이터 시각화
+- 데이터 분석
+- 화면설계
+- 화면구현
 
 ## 2. 데이터베이스 ERD 구조
 
-<img width="766" height="539" alt="Image" src="https://github.com/user-attachments/assets/1bb8028b-ae36-4aab-9e38-73117bd51b9e" />
+![ERD](.\img\erd.png)
 
 - 주요 테이블: `car_registration_by_region`, `elec_car_registration_by_region`, `charging_station_by_region`, `car_type_registration`, `car_use_type_registration`, `companyFAQ`, `ev_ratio`
 - 시도별, 차종별, 용도별, 전기차/충전소 통계 정보를 바탕으로 다양한 분석이 가능함
@@ -46,19 +50,19 @@
 
 ## 3. 요약 대시보드
 
-<img width="1505" height="571" alt="Image" src="https://github.com/user-attachments/assets/8ecad752-6752-4b28-86b7-30f85e192971" />
+![요약 대시보드](.\img\hompage1-1.png)
 
 - 전체 차량 수: **5,262만 대**
 - 전기차 수: **754,106 대**
 - 충전소 수: **394,132 기**
 - 전기차 1대당 충전소 수: **0.52 대/기**
-- 전년 대비 등록 차량 **1.4% 증가**, 전년 대비 **+2.9% 증가**
+- 전기차 비중 약 **1.4%**, 전년 대비 **+2.9% 증가**
 
 ---
 
 ## 4. 인사이트 정리 페이지
 
-<img width="1512" height="825" alt="Image" src="https://github.com/user-attachments/assets/b6ebbc10-e7f9-4f61-abb7-6300accd4eb1" />
+![인사이트 분석](.\img\hompage1-2.png)
 
 ### 전기차/충전소 비율 분석 요약
 1. **지역별 인프라 불균형** – 경기·제주는 충전소당 전기차 비율 높고, 강원 등은 낮음  
@@ -72,16 +76,17 @@
 
 ## 5. 메인 대시보드 기능
 
-<img width="1511" height="796" alt="Image" src="./img/homepage1.png" />
+![메인 대시보드](.\img\hompage1.png)
 
 - 📄 자동차 관련 최신 뉴스 크롤링 기능
-- ☀️ 오늘의 날씨 정보 (기상청 API 사용하여 실시간 날씨정보 표출)
+- ☀️ 오늘의 날씨 정보 (지역별 실시간)
+- 🔍 기사 검색 및 정렬 기능
 
 ---
 
 ## 6. 시도별 등록 차량 추이
 
-<img width="1512" height="945" alt="Image" src="https://github.com/user-attachments/assets/3149a567-096c-4dc1-85d4-ebf4b60c41dd" />
+![시도별 등록 차량 추이](.\img\car-1.png)
 
 - 시작 연도: 2000년 / 종료 연도: 2024년
 - 지역별 차량 등록 대수 변화 추이 시각화
@@ -93,7 +98,7 @@
 
 ## 7. 연도별 전체 등록 차량 총합
 
-<img width="1512" height="945" alt="Image" src="https://github.com/user-attachments/assets/0488ccd4-97b4-41f2-9123-4caa96d7de1d" />
+![연도별 등록 차량 총합](.\img\car-2.png)
 
 - 전체 연도(2000~2024) 동안 등록된 차량 수의 증가 추세를 확인할 수 있음
 - 꾸준한 성장세를 보이며 **2024년까지 약 5000만대 이상 등록**
@@ -102,7 +107,7 @@
 
 ## 8. 차종별 등록 현황
 
-<img width="1512" height="945" alt="Image" src="https://github.com/user-attachments/assets/cd39cb6a-f2b0-4d3b-8ece-2bfd8cdc10ca" />
+![차종별 차량 등록 대수](.\img\car-3.png)
 
 - 승용차, 승합차, 화물차, 특수차로 분류
 - 승용차가 가장 많은 비율을 차지
@@ -113,7 +118,7 @@
 
 ## 9. 용도별 등록 현황
 
-<img width="1512" height="945" alt="Image" src="https://github.com/user-attachments/assets/d08c34b1-33da-45c0-8822-cc1fa188a3a0" />
+![용도별 차량 등록 대수](.\img\car-4.png)
 
 - 공용/자가용/영업용으로 구분된 등록 추이
 - 자가용 비중이 압도적으로 높음
@@ -124,7 +129,7 @@
 
 ## 10. 전기차 등록 추이
 
-<img width="1512" height="945" alt="Image" src="https://github.com/user-attachments/assets/863c5a8e-f5a9-46e7-bf85-738bbe8b3ca6" />
+![전기차 등록 추이](.\img\car-5.png)
 
 - 2017년부터 2024년까지 연도별 등록 변화
 - 2024년 전기차 등록 수가 큰 폭으로 증가 (600만대 수준 추정)
@@ -133,7 +138,7 @@
 
 ## 11. 충전소 구축 추이
 
-<img width="1512" height="945" alt="Image" src="https://github.com/user-attachments/assets/eaa6cc49-c622-43d5-a347-32a3213df0d1" />
+![충전소 구축 추이](.\img\car-6.png)
 
 - 완속, 급속 충전소 구분
 - 2023~2024년 급속 증가세
@@ -142,7 +147,7 @@
 
 ## 12. 지역별 전기차/충전소 비율 분석
 
-<img width="1512" height="945" alt="Image" src="https://github.com/user-attachments/assets/5ed537dd-c5a6-42de-9f89-3c78fa1fb39b" />
+![지역별 비율 분석](.\img\car-7.png)
 
 - 최신 기준: 제주, 경기 지역의 충전소 대비 전기차 대수 비율이 높음
 - 수도권 외곽은 비율이 낮은 편
@@ -151,7 +156,7 @@
 
 ## 13. 연도별 지역 충전소 비율 변화 (%)
 
-<img width="1512" height="945" alt="Image" src="https://github.com/user-attachments/assets/6cfa5f0a-cba2-45f4-80dd-5850162ca037" />
+![연도별 지역 충전소 비율 변화](.\img\car-8.png)
 
 - 인천, 서울의 비율 상승
 - 제주 지역의 충전소 비율은 점차 하락
@@ -160,8 +165,7 @@
 
 ## 14. 브랜드 FAQ 예시 – INFINITI
 
-<img width="1512" height="856" alt="Image" src="https://github.com/user-attachments/assets/c0aa7328-e22f-4f63-b2ff-76d108ef47b1" />
-
+![FAQ 페이지](.\img\crw-1.png)
 
 - 브랜드 별 자주 묻는 질문(FAQ)을 제공
 - INFINITI 관련 이미지, 서비스/보증/리콜 정보 제공
@@ -170,7 +174,7 @@
 
 ## 15. 상세 카테고리 FAQ
 
-<img width="1512" height="945" alt="Image" src="https://github.com/user-attachments/assets/df835437-9e18-46df-9eb1-7dd2ea8ed69d" />
+![FAQ 카테고리별 질문](.\img\crw-2.png)
 
 - 고객 질문에 대한 공식 응답 제공
 - 예시: 인피니티 서비스 종료 일정은 2028년까지 유지 예정
@@ -182,3 +186,10 @@
 - 본 대시보드는 사용자에게 시각적인 인사이트를 제공하며, 정책 및 마케팅 전략 수립에 유용한 자료로 활용 가능
 - 데이터의 지속적 업데이트를 통해 신뢰성 확보 필요
 
+## 개인별 느낀점
+- 황민우: Git사용의 중요성을 느낌
+- 김규리: 팀원간 의사조율의 중요성과 책임감을 느낌
+- 김창헌: llm을 사용법과 전체 코딩을 읽거나 이해해야하는 능력을 더욱 키워야하고 시스템 설계부분에 대해 공부를 더 해야한다
+- 장이건: 테이블 작성시 팀원간 의사소통의 중요성을 느낌
+- 이수진: 기존의 홈페이지 제작 방식이 아니라 streamlit을 이용하여 페이지 제작을 할 수 있다는 것을 알게 되었다.  그리고 데이터 분석과 git 사용법을 알게 되었다.
+- 최지우: page Not Found 404 Error
