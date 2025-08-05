@@ -34,7 +34,7 @@
 
 ## 2. 데이터베이스 ERD 구조
 
-![ERD](.\img\erd.png)
+<img width="766" height="539" alt="Image" src="https://github.com/user-attachments/assets/1bb8028b-ae36-4aab-9e38-73117bd51b9e" />
 
 - 주요 테이블: `car_registration_by_region`, `elec_car_registration_by_region`, `charging_station_by_region`, `car_type_registration`, `car_use_type_registration`, `companyFAQ`, `ev_ratio`
 - 시도별, 차종별, 용도별, 전기차/충전소 통계 정보를 바탕으로 다양한 분석이 가능함
