@@ -41,7 +41,7 @@
 
 ## 2. 데이터베이스 ERD 구조
 
-![ERD](.\img\erd.png)
+<img width="766" height="539" alt="Image" src="https://github.com/user-attachments/assets/87568cc0-0640-4e4d-8cbb-b65f6bad8d36" />
 
 - 주요 테이블: `car_registration_by_region`, `elec_car_registration_by_region`, `charging_station_by_region`, `car_type_registration`, `car_use_type_registration`, `companyFAQ`, `ev_ratio`
 - 시도별, 차종별, 용도별, 전기차/충전소 통계 정보를 바탕으로 다양한 분석이 가능함
@@ -50,7 +50,7 @@
 
 ## 3. 요약 대시보드
 
-![요약 대시보드](.\img\hompage1-1.png)
+<img width="1505" height="571" alt="Image" src="https://github.com/user-attachments/assets/b7becbf8-a613-4ce3-8c7c-103f9cb18024" />
 
 - 전체 차량 수: **5,262만 대**
 - 전기차 수: **754,106 대**
@@ -62,7 +62,7 @@
 
 ## 4. 인사이트 정리 페이지
 
-![인사이트 분석](.\img\hompage1-2.png)
+<img width="1512" height="825" alt="Image" src="https://github.com/user-attachments/assets/ca7b335d-1591-409e-aca0-db1a7031df5b" />
 
 ### 전기차/충전소 비율 분석 요약
 1. **지역별 인프라 불균형** – 경기·제주는 충전소당 전기차 비율 높고, 강원 등은 낮음  
@@ -76,7 +76,7 @@
 
 ## 5. 메인 대시보드 기능
 
-![메인 대시보드](.\img\hompage1.png)
+<img width="1511" height="796" alt="Image" src="https://github.com/user-attachments/assets/78de6e45-c682-47c4-8c84-22a00177cd52" />
 
 - 📄 자동차 관련 최신 뉴스 크롤링 기능
 - ☀️ 오늘의 날씨 정보 (지역별 실시간)
@@ -86,7 +86,7 @@
 
 ## 6. 시도별 등록 차량 추이
 
-![시도별 등록 차량 추이](.\img\car-1.png)
+<img width="1511" height="796" alt="Image" src="https://github.com/user-attachments/assets/78de6e45-c682-47c4-8c84-22a00177cd52" />
 
 - 시작 연도: 2000년 / 종료 연도: 2024년
 - 지역별 차량 등록 대수 변화 추이 시각화
@@ -98,7 +98,7 @@
 
 ## 7. 연도별 전체 등록 차량 총합
 
-![연도별 등록 차량 총합](.\img\car-2.png)
+<img width="1512" height="945" alt="Image" src="https://github.com/user-attachments/assets/f1a361a7-c07d-499d-a922-3b03dda40a03" />
 
 - 전체 연도(2000~2024) 동안 등록된 차량 수의 증가 추세를 확인할 수 있음
 - 꾸준한 성장세를 보이며 **2024년까지 약 5000만대 이상 등록**
@@ -107,7 +107,7 @@
 
 ## 8. 차종별 등록 현황
 
-![차종별 차량 등록 대수](.\img\car-3.png)
+<img width="1512" height="945" alt="Image" src="https://github.com/user-attachments/assets/3f48ba08-21d4-4c26-abae-e7ff711eeb7c" />
 
 - 승용차, 승합차, 화물차, 특수차로 분류
 - 승용차가 가장 많은 비율을 차지
@@ -118,7 +118,7 @@
 
 ## 9. 용도별 등록 현황
 
-![용도별 차량 등록 대수](.\img\car-4.png)
+<img width="1512" height="945" alt="Image" src="https://github.com/user-attachments/assets/286f2f8d-21a2-43b4-a4af-b1f7c676b4d5" />
 
 - 공용/자가용/영업용으로 구분된 등록 추이
 - 자가용 비중이 압도적으로 높음
@@ -129,7 +129,7 @@
 
 ## 10. 전기차 등록 추이
 
-![전기차 등록 추이](.\img\car-5.png)
+<img width="1512" height="945" alt="Image" src="https://github.com/user-attachments/assets/ac755346-240b-4f49-a8b1-444d9eb10c03" />
 
 - 2017년부터 2024년까지 연도별 등록 변화
 - 2024년 전기차 등록 수가 큰 폭으로 증가 (600만대 수준 추정)
@@ -138,7 +138,7 @@
 
 ## 11. 충전소 구축 추이
 
-![충전소 구축 추이](.\img\car-6.png)
+<img width="1512" height="945" alt="Image" src="https://github.com/user-attachments/assets/96367303-3504-4ccf-9fa2-fe351e5b4a13" />
 
 - 완속, 급속 충전소 구분
 - 2023~2024년 급속 증가세
@@ -147,7 +147,7 @@
 
 ## 12. 지역별 전기차/충전소 비율 분석
 
-![지역별 비율 분석](.\img\car-7.png)
+<img width="1512" height="945" alt="Image" src="https://github.com/user-attachments/assets/9e62b7ca-c1c7-447a-95da-2ab5baf0abed" />
 
 - 최신 기준: 제주, 경기 지역의 충전소 대비 전기차 대수 비율이 높음
 - 수도권 외곽은 비율이 낮은 편
@@ -156,7 +156,7 @@
 
 ## 13. 연도별 지역 충전소 비율 변화 (%)
 
-![연도별 지역 충전소 비율 변화](.\img\car-8.png)
+<img width="1512" height="945" alt="Image" src="https://github.com/user-attachments/assets/3b130378-a38f-4719-a5c8-c3dd71fd8504" />
 
 - 인천, 서울의 비율 상승
 - 제주 지역의 충전소 비율은 점차 하락
@@ -165,7 +165,7 @@
 
 ## 14. 브랜드 FAQ 예시 – INFINITI
 
-![FAQ 페이지](.\img\crw-1.png)
+<img width="1512" height="856" alt="Image" src="https://github.com/user-attachments/assets/b401b9d0-cc25-43e4-bd6a-6556342243a6" />
 
 - 브랜드 별 자주 묻는 질문(FAQ)을 제공
 - INFINITI 관련 이미지, 서비스/보증/리콜 정보 제공
@@ -174,7 +174,7 @@
 
 ## 15. 상세 카테고리 FAQ
 
-![FAQ 카테고리별 질문](.\img\crw-2.png)
+<img width="1512" height="945" alt="Image" src="https://github.com/user-attachments/assets/bfe596fa-3396-4243-b47d-d180328c267f" />
 
 - 고객 질문에 대한 공식 응답 제공
 - 예시: 인피니티 서비스 종료 일정은 2028년까지 유지 예정
