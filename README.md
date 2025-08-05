@@ -18,14 +18,17 @@
   <tr>
     <td><img src="https://img.shields.io/badge/python-3776AB?style=flat&logo=python&logoColor=white"/></td>
     <td><img src="https://img.shields.io/badge/-Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white"/></td>
-    <td><img src="https://img.shields.iㄱo/badge/mysql-4479A1?style=flat&logo=mysql&logoColor=white"/></td>
-  </tr>  
-</table><br><br> 
+    <td><img src="https://img.shields.io/badge/mysql-4479A1?style=flat&logo=mysql&logoColor=white"/></td>
+    <td><img src="https://img.shields.io/badge/Selenium-43B02A?logo=Selenium&logoColor=white"/></td>
+  </tr>
+</table>
 
 ## 🔎Data
+- 지표누리 자동차 등록현황 https://www.index.go.kr/unity/potal/main/EachDtlPageDetail.do?idx_cd=1257
+- 전국 전기차 충전소 <br> https://chargeinfo.ksga.org/front/statistics/charger
+- 전국 전기차 등록대수 <br> https://chargeinfo.ksga.org/front/statistics/evCar/
 
-## 📈Flow Chart
-## 발표자료
+### 발표자료
 ## 1. 개요
 
 본 대시보드는 대한민국의 자동차 등록 현황 및 전기차/충전소 데이터를 시각적으로 분석하고 사용자에게 직관적인 정보를 제공합니다.
@@ -49,7 +52,7 @@
 - 전기차 수: **754,106 대**
 - 충전소 수: **394,132 기**
 - 전기차 1대당 충전소 수: **0.52 대/기**
-- 전기차 비중 약 **1.4%**, 전년 대비 **+2.9% 증가**
+- 전년 대비 등록 차량 **1.4% 증가**, 전년 대비 **+2.9% 증가**
 
 ---
 
@@ -69,11 +72,10 @@
 
 ## 5. 메인 대시보드 기능
 
-<img width="1511" height="796" alt="Image" src="https://github.com/user-attachments/assets/23e0a62c-ec8c-4fa6-a967-9afdc2ce79e9" />
+<img width="1511" height="796" alt="Image" src="./img/homepage1.png" />
 
 - 📄 자동차 관련 최신 뉴스 크롤링 기능
-- ☀️ 오늘의 날씨 정보 (지역별 실시간)
-- 🔍 기사 검색 및 정렬 기능
+- ☀️ 오늘의 날씨 정보 (기상청 API 사용하여 실시간 날씨정보 표출)
 
 ---
 
