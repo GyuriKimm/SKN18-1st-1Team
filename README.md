@@ -24,7 +24,7 @@
 </table>
 
 ## 🔎Data
-- 지표누리 자동차 등록현황 https://www.index.go.kr/unity/potal/main/EachDtlPageDetail.do?idx_cd=1257
+- 지표누리 자동차 등록현황 <br> https://www.index.go.kr/unity/potal/main/EachDtlPageDetail.do?idx_cd=1257
 - 전국 전기차 충전소 <br> https://chargeinfo.ksga.org/front/statistics/charger
 - 전국 전기차 등록대수 <br> https://chargeinfo.ksga.org/front/statistics/evCar/
 
